@@ -2,10 +2,13 @@ var path,boy,cash,diamonds,jwellery,sword;
 var pathImg,boyImg,cashImg,diamondsImg,jwelleryImg,swordImg,endImg;
 var treasureCollection = 0;
 var cashG,diamondsG,jwelleryG,swordGroup;
+var hurdle,hurdle2, hurdleG;
+var randomObstacle;
 
 var PLAY=0;
 var END=1;
 var gameState=PLAY;
+var lost=0;
 
 function preload(){
   pathImg = loadImage("Road.png");
@@ -15,6 +18,8 @@ function preload(){
   jwelleryImg = loadImage("jwell.png");
   swordImg = loadImage("sword.png");
   endImg =loadAnimation("gameOver.png");
+  
+  hurdle2=loadImage("hurdle-removebg-preview.png")
 }
 
 function setup(){
@@ -39,6 +44,9 @@ cashG=new Group();
 diamondsG=new Group();
 jwelleryG=new Group();
 swordGroup=new Group();
+hurdleG=new Group(); 
+  
+  
 
 }
 
@@ -57,28 +65,48 @@ function draw() {
     path.y = height/2;
   }
   
-    createCash();
+  randomObstacle=Math.round(random(1,2));
+    switch(randomObstacle){
+      case 1:
+        createCash();
     createDiamonds();
     createJwellery();
     createSword();
+    break;
+    case 2:
+        createHurdles();
+        break;
+    }
+    console.log(randomObstacle);
+    
 
     if (cashG.isTouching(boy)) {
       cashG.destroyEach();
       treasureCollection=treasureCollection+50;
+      
     }
     else if (diamondsG.isTouching(boy)) {
       diamondsG.destroyEach();
       treasureCollection=treasureCollection+100;
       
-    }else if(jwelleryG.isTouching(boy)) {
+    }
+    else if(jwelleryG.isTouching(boy)) {
       jwelleryG.destroyEach();
       treasureCollection=treasureCollection+150;
       
-    }else{
+    }
+    else if(hurdleG.isTouching(boy)){
+      hurdleG.destroyEach();
+      lost=lost+1;
+    }
+    else{
       if(swordGroup.isTouching(boy)) {
         swordGroup.destroyEach();
-        gameState=END;
+        lost=lost+1;
     }
+      if(lost===5){
+        gameState=END;
+      }
   }
   }
   if(gameState===END){
@@ -95,12 +123,17 @@ function draw() {
     diamondsG.setVelocityYEach=0;
     jwelleryG.destroyEach();
     jwelleryG.setVelocityYEach=0;
+    
+    hurdleG.destroyEach();
+    hurdleG.setVelocityYEach=0;
+     
   }
   
   drawSprites();
   textSize(20);
   fill(255);
-  text("Treasure: "+ treasureCollection,150,30);
+  text("Treasure: "+ treasureCollection,20,30);
+  text("Lost lives: "+lost+"/5",230,30);
 
 }
 
@@ -148,5 +181,15 @@ function createSword(){
   sword.velocityY = 3;
   sword.lifetime = 150;
   swordGroup.add(sword);
+  }
+}
+function createHurdles(){
+  if (World.frameCount % 80 == 0) {
+    hurdle=createSprite(Math.round(random(50, 350),40, 10, 10));
+    hurdle.velocityY = 3;
+    hurdle.addImage(hurdle2);
+    hurdle.lifetime = 150;
+    hurdle.scale=0.2;
+    hurdleG.add(hurdle);
   }
 }
