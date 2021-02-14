@@ -24,15 +24,15 @@ function preload() {
 
 function setup() {
 
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
   // Moving background
-  path = createSprite(200, 200);
+  path = createSprite(windowWidth/2, windowHeight/2);
   path.addImage(pathImg);
   path.velocityY = 4;
 
 
   //creating boy running
-  boy = createSprite(70, 330, 20, 20);
+  boy = createSprite(windowWidth/2, windowHeight-70, 20, 20);
 
   boy.addAnimation("SahilRunning", boyImg);
   boy.addAnimation("go", endImg);
@@ -62,7 +62,7 @@ function draw() {
 
 
     if (path.y > 400) {
-      path.y = height / 2;
+      path.y = windowHeight / 2;
     }
 
     randomObstacle = Math.round(random(1, 2));
@@ -108,8 +108,8 @@ function draw() {
   if (gameState === END) {
     boy.changeAnimation("go", endImg);
     boy.scale = 1.05;
-    boy.x = 200;
-    boy.y = 150;
+    boy.x = windowWidth/2;
+    boy.y = windowHeight/2;
 
     path.velocityY = 0;
     cashG.destroyEach();
@@ -122,24 +122,27 @@ function draw() {
 
     hurdleG.destroyEach();
     hurdleG.setVelocityYEach = 0;
+    
+    swordGroup.destroyEach();
+    swordGroup.setVelocityYEach = 0;
 
   }
 
   drawSprites();
   textSize(20);
   fill(255);
-  text("Treasure: " + treasureCollection, 20, 30);
-  text("Lost lives: " + lost + "/5", 230, 30);
+  text("Treasure: " + treasureCollection, windowWidth-145, 30);
+  text("Lost lives: " + lost + "/5", windowWidth-(windowWidth-20), 30);
 
 }
 
 function createCash() {
   if (World.frameCount % 50 == 0) {
-    var cash = createSprite(Math.round(random(50, 350), 40, 10, 10));
+    var cash = createSprite(Math.round(random(50, windowWidth-50), 40, 10, 10));
     cash.addImage(cashImg);
     cash.scale = 0.12;
     cash.velocityY = 3;
-    cash.lifetime = 150;
+    cash.lifetime = windowHeight/3;
 
     cashG.add(cash);
   }
@@ -147,11 +150,11 @@ function createCash() {
 
 function createDiamonds() {
   if (World.frameCount % 80 == 0) {
-    var diamonds = createSprite(Math.round(random(50, 350), 40, 10, 10));
+    var diamonds = createSprite(Math.round(random(50, windowWidth-50), 40, 10, 10));
     diamonds.addImage(diamondsImg);
     diamonds.scale = 0.03;
     diamonds.velocityY = 3;
-    diamonds.lifetime = 150;
+    diamonds.lifetime = windowHeight/3;
 
     diamondsG.add(diamonds);
   }
@@ -159,11 +162,11 @@ function createDiamonds() {
 
 function createJwellery() {
   if (World.frameCount % 80 == 0) {
-    var jwellery = createSprite(Math.round(random(50, 350), 40, 10, 10));
+    var jwellery = createSprite(Math.round(random(50, windowWidth-50), 40, 10, 10));
     jwellery.addImage(jwelleryImg);
     jwellery.scale = 0.13;
     jwellery.velocityY = 3;
-    jwellery.lifetime = 150;
+    jwellery.lifetime = windowHeight/3;
 
     jwelleryG.add(jwellery);
   }
@@ -171,21 +174,24 @@ function createJwellery() {
 
 function createSword() {
   if (World.frameCount % 150 == 0) {
-    var sword = createSprite(Math.round(random(50, 350), 40, 10, 10));
+    var sword = createSprite(Math.round(random(50, windowWidth-50), 40, 10, 10));
     sword.addImage(swordImg);
     sword.scale = 0.1;
     sword.velocityY = 3;
-    sword.lifetime = 150;
+    sword.lifetime = windowHeight/3;
     swordGroup.add(sword);
   }
 }
 
 function createHurdles() {
   if (World.frameCount % 80 == 0) {
-    hurdle = createSprite(Math.round(random(50, 350), 40, 10, 10));
+    hurdle = createSprite(Math.round(random(50, windowWidth-50), 40, 10, 10));
+   //hurdle.debug=true;
+    hurdle.setCollider("rectangle",0,0,50,40);
+    hurdle.depth=boy.depth
     hurdle.velocityY = 3;
     hurdle.addImage(hurdle2);
-    hurdle.lifetime = 150;
+    hurdle.lifetime = windowHeight/3;
     hurdle.scale = 0.2;
     hurdleG.add(hurdle);
   }
